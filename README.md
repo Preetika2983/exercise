@@ -1,13 +1,13 @@
 //BEHAVIORAL DESIGN PATTERNS
 //Command pattern:
 
-// Command.java
+
 interface Command {
     void execute();
     void undo();
 }
 
-// Light.java
+
 class Light {
     public void turnOn() {
         System.out.println("Light is ON");
@@ -18,7 +18,7 @@ class Light {
     }
 }
 
-// LightOnCommand.java
+
 class LightOnCommand implements Command {
     private Light light;
 
@@ -37,7 +37,7 @@ class LightOnCommand implements Command {
     }
 }
 
-// LightOffCommand.java
+
 class LightOffCommand implements Command {
     private Light light;
 
@@ -56,7 +56,7 @@ class LightOffCommand implements Command {
     }
 }
 
-// RemoteControl.java
+
 class RemoteControl {
     private Command command;
 
@@ -73,7 +73,7 @@ class RemoteControl {
     }
 }
 
-// Main.java
+
 public class Main {
     public static void main(String[] args) {
         Light livingRoomLight = new Light();
