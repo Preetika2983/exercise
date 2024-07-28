@@ -1,0 +1,65 @@
+Creational Design Patterns:
+Builder Pattern:
+
+class Sandwich {
+    private String bread;
+    private String meat;
+    private String cheese;
+    private String veggies;
+
+    private Sandwich(SandwichBuilder builder) {
+        this.bread = builder.bread;
+        this.meat = builder.meat;
+        this.cheese = builder.cheese;
+        this.veggies = builder.veggies;
+    }
+
+    public static class SandwichBuilder {
+        private String bread;
+        private String meat;
+        private String cheese;
+        private String veggies;
+
+        public SandwichBuilder setBread(String bread) {
+            this.bread = bread;
+            return this;
+        }
+
+        public SandwichBuilder setMeat(String meat) {
+            this.meat = meat;
+            return this;
+        }
+
+        public SandwichBuilder setCheese(String cheese) {
+            this.cheese = cheese;
+            return this;
+        }
+
+        public SandwichBuilder setVeggies(String veggies) {
+            this.veggies = veggies;
+            return this;
+        }
+
+        public Sandwich build() {
+            return new Sandwich(this);
+        }
+    }
+
+    @Override
+    public String toString() {
+        return "Sandwich [bread=" + bread + ", meat=" + meat + ", cheese=" + cheese + ", veggies=" + veggies + "]";
+    }
+}
+
+public class Main {
+    public static void main(String[] args) {
+        Sandwich sandwich = new Sandwich.SandwichBuilder()
+                .setBread("Wheat")
+                .setMeat("Turkey")
+                .setCheese("Cheddar")
+                .setVeggies("Lettuce, Tomato")
+                .build();
+
+        System.out.println(sandwich);
+    }
+}
