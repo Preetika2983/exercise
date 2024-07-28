@@ -1,0 +1,142 @@
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+interface ChatMediator {
+    void sendMessage(String message, User user);
+    void addUser(User user);
+}
+
+
+class ChatMediatorImpl implements ChatMediator {
+    private List<User> users;
+    public ChatMediatorImpl() {
+        this.users = new ArrayList<>();
+    }
+    @Override
+    public void addUser(User user) {
+        this.users.add(user);
+    }
+    @Override
+    public void sendMessage(String message, User user) {
+        for (User u : users) {
+            if (u != user) {
+                u.receive(message);
+            }
+        }
+    }
+}
+
+
+abstract class User {
+    protected ChatMediator mediator;
+    protected String name;
+    public User(ChatMediator mediator, String name) {
+        this.mediator = mediator;
+        this.name = name;
+    }
+    public abstract void send(String message);
+    public abstract void receive(String message);
+}
+
+
+class UserImpl extends User {
+    public UserImpl(ChatMediator mediator, String name) {
+        super(mediator, name);
+    }
+    @Override
+    public void send(String message) {
+        System.out.println(this.name + ": Sending Message=" + message);
+        mediator.sendMessage(message, this);
+    }
+    @Override
+    public void receive(String message) {
+        System.out.println(this.name + ": Received Message=" + message);
+    }
+}
+
+
+public class ChatRoom {
+    private String id;
+    private List<User> users = new ArrayList<>();
+    private List<ChatRoomObserver> observers = new ArrayList<>();
+    public ChatRoom(String id) {
+        this.id = id;
+    }
+    public void join(User user) {
+        users.add(user);
+        notifyObservers(user.getName() + " joined the room.");
+    }
+    public void sendMessage(User user, String message) {
+        notifyObservers(user.getName() + ": " + message);
+    }
+    private void notifyObservers(String message) {
+        for (ChatRoomObserver observer : observers) {
+            observer.update(message);
+        }
+    }
+    public void addObserver(ChatRoomObserver observer) {
+        observers.add(observer);
+    }
+}
+
+
+public interface ChatRoomObserver {
+    void update(String message);
+}
+
+
+public class ChatRoomManager {
+    private static ChatRoomManager instance;
+    private Map<String, ChatRoom> chatRooms = new HashMap<>();
+    private ChatRoomManager() {}
+    public static synchronized ChatRoomManager getInstance() {
+        if (instance == null) {
+            instance = new ChatRoomManager();
+        }
+        return instance;
+    }
+    public ChatRoom getChatRoom(String id) {
+        return chatRooms.computeIfAbsent(id, ChatRoom::new);
+    }
+}
+
+
+public class User {
+    private String name;
+    private ChatRoom currentRoom;
+    public User(String name) {
+        this.name = name;
+    }
+    public void joinRoom(ChatRoom room) {
+        if (currentRoom != null) {
+            currentRoom = null;
+        }
+        currentRoom = room;
+        room.join(this);
+    }
+    public void sendMessage(String message) {
+        if (currentRoom != null) {
+            currentRoom.sendMessage(this, message);
+        }
+    }
+    public String getName() {
+        return name;
+    }
+}
+
+
+public class Main {
+    public static void main(String[] args) {
+        ChatRoomManager manager = ChatRoomManager.getInstance();
+        ChatRoom room = manager.getChatRoom("Room123");
+        User user1 = new User("Alice");
+        User user2 = new User("Bob");
+        room.addObserver(System.out::println);
+        user1.joinRoom(room);
+        user2.joinRoom(room);
+        user1.sendMessage("Hello, everyone!");
+        user2.sendMessage("Hi Alice!");
+    }
+}
