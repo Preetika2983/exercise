@@ -1,0 +1,84 @@
+Creational Design Patterns:
+Abstract Factory Pattern:
+
+
+interface Button {
+    void paint();
+}
+
+
+class MacOSButton implements Button {
+    @Override
+    public void paint() {
+        System.out.println("Rendering a button in MacOS style.");
+    }
+}
+
+class WindowsButton implements Button {
+    @Override
+    public void paint() {
+        System.out.println("Rendering a button in Windows style.");
+    }
+}
+
+// GUIFactory.java
+interface GUIFactory {
+    Button createButton();
+}
+
+
+class MacOSFactory implements GUIFactory {
+    @Override
+    public Button createButton() {
+        return new MacOSButton();
+    }
+}
+
+
+class WindowsFactory implements GUIFactory {
+    @Override
+    public Button createButton() {
+        return new WindowsButton();
+    }
+}
+
+
+class Application {
+    private GUIFactory factory;
+    private Button button;
+
+    public Application(GUIFactory factory) {
+        this.factory = factory;
+    }
+
+    public void createUI() {
+        this.button = factory.createButton();
+    }
+
+    public void paint() {
+        button.paint();
+    }
+}
+
+public class Main {
+    private static Application configureApplication() {
+        Application app;
+        GUIFactory factory;
+
+        String osName = System.getProperty("os.name").toLowerCase();
+        if (osName.contains("mac")) {
+            factory = new MacOSFactory();
+        } else {
+            factory = new WindowsFactory();
+        }
+        app = new Application(factory);
+        return app;
+    }
+
+    public static void main(String[] args) {
+        Application app = configureApplication();
+        app.createUI();
+        app.paint();
+    }
+}
+
