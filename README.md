@@ -1,5 +1,7 @@
-BEHAVIORAL DESIGN PATTERNS
-Command pattern:
+//BEHAVIORAL DESIGN PATTERNS
+//Command pattern:
+
+
 interface Command { void execute(); void undo(); }
 
 class TextEditor { StringBuilder text = new StringBuilder();
@@ -18,7 +20,10 @@ public class Main { public static void main(String[] args) {
     typeCommand.execute(); System.out.println("Text: " + editor.getText());
     typeCommand.undo(); System.out.println("Text: " + editor.getText()); }
 }
-Mediator pattern:
+//Mediator pattern:
+
+
+
 interface ChatMediator { void sendMessage(String message, User user); void addUser(User user); }
 class ChatMediatorImpl implements ChatMediator {
     private List<User> users = new ArrayList<>();
